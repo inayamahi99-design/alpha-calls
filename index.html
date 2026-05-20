@@ -644,7 +644,7 @@ function pdfHeader(doc,dead,m,pageW,pageH){
 
   doc.setTextColor(dead?255:0,dead?80:255,dead?95:157);
   doc.setFontSize(8);
-  doc.text(dead?'DEAD':'LIVE',pageW-m-12,14,{align:'right'});
+  doc.text(dead?'DEAD':'ALIVE',pageW-m-12,14,{align:'right'});
 }
 
 function addSection(doc,title,y,m,pageW,pageH,dead=false){
@@ -773,14 +773,15 @@ function generatePDF(dead=false){
 
   y=compactRepeatTable(doc,y,'06 — BANK SECTION',state.records.banks,[
     {h:'#',k:'_no',w:7},
-    {h:'Bank',k:'name',w:25},
-    {h:'Single/Joint',k:'singleJoint',w:21},
-    {h:'Type',k:'type',w:20},
-    {h:'Year',k:'year',w:13},
-    {h:'PhonePe',k:'phonepe',w:22},
-    {h:'GPay',k:'googlepay',w:22},
-    {h:'Closing Bal',k:'closingBalance',w:29},
-    {h:'FD',k:'fd'}
+    {h:'Bank',k:'name',w:23},
+    {h:'Single/Joint',k:'singleJoint',w:19},
+    {h:'Type',k:'type',w:18},
+    {h:'Year',k:'year',w:12},
+    {h:'PhonePe',k:'phonepe',w:19},
+    {h:'GPay',k:'googlepay',w:19},
+    {h:'Closing Bal',k:'closingBalance',w:24},
+    {h:'FD',k:'fd',w:18},
+    {h:'Distance',k:'distance'}
   ],m,pageW,pageH,dead);
 
   y=assetCompactTable(doc,y,m,pageW,pageH,dead);
@@ -797,14 +798,35 @@ function generatePDF(dead=false){
     doc.setFontSize(7);
     doc.text('ALPHA PRODUCTION HOUSE',m,pageH-4);
     doc.setTextColor(dead?255:0,dead?80:255,dead?95:157);
-    doc.text(dead?'DEAD REPORT':'LIVE PDF',pageW/2,pageH-4,{align:'center'});
+    doc.text(dead?'DEAD REPORT':'ALIVE PDF',pageW/2,pageH-4,{align:'center'});
     doc.setTextColor(117,255,224);
     doc.text('Page '+i+' of '+pages,pageW-m,pageH-4,{align:'right'});
+
+    const cambodiaNow = new Date().toLocaleString('en-GB', {
+      timeZone: 'Asia/Phnom_Penh',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(5.5);
+    doc.setTextColor(140,140,140);
+    doc.text('Cambodia Time: '+cambodiaNow,m,pageH-1.8);
   }
 
-  let line1=(state.data.line1||'LINE1').replace(/ +/g,'_');
-  let line2=(state.data.line2||'LINE2').replace(/ +/g,'_');
-  doc.save(line1+'_'+line2+'_'+(dead?'DEAD':'LIVE')+'.pdf');
+  function safeFilePart(value,fallback){
+    return (value||fallback).toString().trim().replace(/[^a-z0-9_-]+/gi,'_').replace(/^_+|_+$/g,'') || fallback;
+  }
+
+  let clientName=safeFilePart(state.data.clientName,'CLIENT');
+  let line1=safeFilePart(state.data.line1,'LINE1');
+  let line2=safeFilePart(state.data.line2,'LINE2');
+  doc.save(clientName+'_'+line1+'_'+line2+'_'+(dead?'DEAD':'ALIVE')+'.pdf');
   msg('status2',dead?'Dead Report PDF downloaded.':'Line 2 PDF downloaded.');
 }
 
