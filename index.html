@@ -240,7 +240,7 @@ const repeatConfigs={
   }
 };
 
-function oddIds(){return Array.from({length:26},(_,i)=>'X'+(i*2+1))}
+function oddIds(){return Array.from({length:50},(_,i)=>'X'+(i*2+1))}
 function evenIds(){return Array.from({length:16},(_,i)=>'X'+(i*2+2))}
 function assetFields(){
   return [
@@ -311,7 +311,7 @@ const flow=[
 const qs=(s,p=document)=>p.querySelector(s);
 const qsa=(s,p=document)=>[...p.querySelectorAll(s)];
 
-for(let i=1;i<=51;i+=2) qs('#l1_slot').add(new Option('X'+i,'X'+i));
+for(let i=1;i<=99;i+=2) qs('#l1_slot').add(new Option('X'+i,'X'+i));
 
 qsa('.tab').forEach(btn=>btn.onclick=()=>{
   qsa('.tab').forEach(b=>b.classList.remove('active'));
